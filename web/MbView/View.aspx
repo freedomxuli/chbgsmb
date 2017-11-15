@@ -50,7 +50,7 @@
 <body>
     <form id="form1" runat="server">
     <table width="100%" height="100%" cellspacing="0" cellpadding="0" border="0">
-        <tr>
+        <tr class="wintitle">
             <td colspan="2" style="border-bottom:2px solid #808080;" align="center"><div class="Title ParentTitle"></div><div class="Title SonTitle">&nbsp;</div><div style="float:right;"><img src="../Images/sm1.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">在途</span>&nbsp;<span style="font-size:12px;" class="zt"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">到达</span>&nbsp;<span style="font-size:12px;" class="dd"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">返程</span>&nbsp;<span style="font-size:12px;" class="fc"></span>&nbsp;</div></td>
         </tr>
         <tr>
@@ -59,7 +59,7 @@
                     
                 </ul>
             </td>
-            <td class="wincontent" width="90%" height="650px">
+            <td class="wincontent" width="90%">
                 <div id="container"></div>
                 <div class="button-group">
                     <input type="button" class="button" id="mapshow" value="刷新地图" />
@@ -78,6 +78,7 @@
             var wheight = $(window).height();
             wincontent = wheight - 78;
             $(".wincontent").height(wincontent);
+            $(".wintitle").height(78);
             $.getUrlParam = function (name) {
                 var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
                 var r = window.location.search.substr(1).match(reg);
