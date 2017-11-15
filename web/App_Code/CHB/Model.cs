@@ -38,7 +38,7 @@ public class Model
                 SqlCommand cmd = db.CreateCommand(sql);
                 if (!string.IsNullOrEmpty(UserName))
                     cmd.Parameters.AddWithValue("@UserName", "%" + UserName + "%");
-                if(!string.IsNullOrEmpty(Company))
+                if (!string.IsNullOrEmpty(Company))
                     cmd.Parameters.AddWithValue("@Company", "%" + Company + "%");
 
                 DataTable dt = db.GetPagedDataTable(cmd, PageSize, ref cp, out ac);
@@ -224,7 +224,7 @@ public class Model
                     conn += " and Company like @Company";
                 sql = "select * from UserAndCompany where 1=1 " + conn;
                 SqlCommand cmd1 = db.CreateCommand(sql);
-                if(Convert.ToInt32(dt.Rows[0]["num"].ToString()) > 0)
+                if (Convert.ToInt32(dt.Rows[0]["num"].ToString()) > 0)
                     cmd1.Parameters.Add("@MID", MID);
                 if (!string.IsNullOrEmpty(Company))
                     cmd1.Parameters.Add("@Company", "%" + Company + "%");
@@ -350,9 +350,9 @@ public class Model
     }
 
     [CSMethod("GetDetailsByView")]
-    public object GetDetailsByView(string ID,string UserName)
+    public object GetDetailsByView(string ID, string UserName)
     {
-        using(var db = new DBConnection())
+        using (var db = new DBConnection())
         {
             string sql = "select * from CompanyModel where ID = @ID";
             SqlCommand cmd = db.CreateCommand(sql);
@@ -375,20 +375,24 @@ public class Model
 
             sql = "select YunDanDenno from YunDanIsArrive";
             DataTable dt_dan = db.ExecuteDataTable(sql);
-
+            int zt = 0;
+            int dd = 0;
+            int fc = 0;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
                 string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
-                dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p>" +
+                dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
                                          "<HR style='border:1 solid #2828FF' width='100%'>"
-                                         + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"]  + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"]  + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"]  + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"]  + "</p>"
-                                        + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"]  + "</p>"
+                                         + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
+                                        + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
+                                        + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                        + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
+                                        + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
                                         + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
-                                        + "</div>";
+                                        + "</div>"
+                                        + "<HR style='border:1 solid #2828FF' width='100%'>"
+                                        + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
 
                 string DaoDaZhan = dt.Rows[i]["DaoDaZhan"].ToString().Replace(" ", "");
                 string[] LastZhanArray = dt.Rows[i]["Gps_lastinfo"].ToString().Split(' ');
@@ -400,6 +404,7 @@ public class Model
                 if (DaoDaZhan == LastZhan)
                 {
                     dt.Rows[i]["ZT"] = "1";//到达
+                    dd++;
                 }
                 else
                 {
@@ -407,15 +412,17 @@ public class Model
                     if (drs.Length > 0)
                     {
                         dt.Rows[i]["ZT"] = "2";//回途
+                        fc++;
                     }
                     else
                     {
                         dt.Rows[i]["ZT"] = "0";//在途
+                        zt++;
                     }
                 }
             }
 
-            return new { dt_model = dt_model, dt_child = dt_child, dt = dt };
+            return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc };
         }
     }
 }
