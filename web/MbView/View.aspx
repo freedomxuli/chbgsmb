@@ -74,6 +74,7 @@
         var user = "";
         var isautofresh = true;
         var num = 0;
+        var jsnum = 0;
         $(function () {
             var wheight = $(window).height();
             wincontent = wheight - 78;
@@ -104,8 +105,13 @@
             }
             num = num + 1
             if (num >= 60) {
-                num = 0;
-                GetData(gsid, user);
+                if (jsnum > 20) {
+                    window.location.reload();
+                } else {
+                    jsnum++;
+                    num = 0;
+                    GetData(gsid, user);
+                }
             }
             $("#mapshow").val("自动刷新(" + (60 - num) + ")秒");
         }
