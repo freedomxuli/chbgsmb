@@ -380,44 +380,47 @@ public class Model
             int fc = 0;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
-                string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
-                dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
-                                         "<HR style='border:1 solid #2828FF' width='100%'>"
-                                         + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
-                                        + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
-                                        + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
-                                        + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
-                                        + "</div>"
-                                        + "<HR style='border:1 solid #2828FF' width='100%'>"
-                                        + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
+                if (!string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlat"].ToString()))
+                {
+                    dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
+                    string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
+                    dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
+                                             "<HR style='border:1 solid #2828FF' width='100%'>"
+                                             + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
+                                            + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
+                                            + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                            + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
+                                            + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
+                                            + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
+                                            + "</div>"
+                                            + "<HR style='border:1 solid #2828FF' width='100%'>"
+                                            + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
 
-                string DaoDaZhan = dt.Rows[i]["DaoDaZhan"].ToString().Replace(" ", "");
-                string[] LastZhanArray = dt.Rows[i]["Gps_lastinfo"].ToString().Split(' ');
-                string LastZhan = "";
-                if (LastZhanArray.Length >= 2)
-                {
-                    LastZhan = LastZhanArray[0] + LastZhanArray[1];
-                }
-                if (DaoDaZhan == LastZhan)
-                {
-                    dt.Rows[i]["ZT"] = "1";//到达
-                    dd++;
-                }
-                else
-                {
-                    DataRow[] drs = dt_dan.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"].ToString() + "'");
-                    if (drs.Length > 0)
+                    string DaoDaZhan = dt.Rows[i]["DaoDaZhan"].ToString().Replace(" ", "");
+                    string[] LastZhanArray = dt.Rows[i]["Gps_lastinfo"].ToString().Split(' ');
+                    string LastZhan = "";
+                    if (LastZhanArray.Length >= 2)
                     {
-                        dt.Rows[i]["ZT"] = "2";//回途
-                        fc++;
+                        LastZhan = LastZhanArray[0] + LastZhanArray[1];
+                    }
+                    if (DaoDaZhan == LastZhan)
+                    {
+                        dt.Rows[i]["ZT"] = "1";//到达
+                        dd++;
                     }
                     else
                     {
-                        dt.Rows[i]["ZT"] = "0";//在途
-                        zt++;
+                        DataRow[] drs = dt_dan.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"].ToString() + "'");
+                        if (drs.Length > 0)
+                        {
+                            dt.Rows[i]["ZT"] = "2";//回途
+                            fc++;
+                        }
+                        else
+                        {
+                            dt.Rows[i]["ZT"] = "0";//在途
+                            zt++;
+                        }
                     }
                 }
             }
