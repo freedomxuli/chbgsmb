@@ -627,7 +627,7 @@ function GL(mid,name) {
 function HQ(mid) {
     var win = new URLWin();
     win.show(null, function () {
-        Ext.getCmp("Url").setText("http://47.96.248.12:8014/MbView/View.aspx?id=" + mid);
+        Ext.getCmp("Url").setText("http://client.chahuobao.net/MbView/View.aspx?id=" + mid);
     });
 }
 
