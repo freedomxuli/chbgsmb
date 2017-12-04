@@ -288,15 +288,15 @@ window.InlineMCS = Inline_MultiCallServer;
 
 
 CS.onError = function (err, context) {
-    setTimeout(function () {
-        Ext.MessageBox.show({
-            title: "错误",
-            //msg: "执行" + context + "发生错误\n" + err,
-            msg: err.replace("\n", "<br/>"),
-            buttons: Ext.MessageBox.OK,
-            icon: Ext.MessageBox.ERROR
-        });
-    }, 1);
+    //setTimeout(function () {
+    //    Ext.MessageBox.show({
+    //        title: "错误",
+    //        //msg: "执行" + context + "发生错误\n" + err,
+    //        msg: err.replace("\n", "<br/>"),
+    //        buttons: Ext.MessageBox.OK,
+    //        icon: Ext.MessageBox.ERROR
+    //    });
+    //}, 1);
 };
 
 function DownloadFile(context, fileName) {
