@@ -119,6 +119,7 @@
         function GetData(id, username) {
             ACS('CZCLZ.Model.GetDetailsByView', function (retVal) {
                 if (retVal) {
+                    $("title").html(retVal.dt_model[0]["ShowName"]);
                     $(".ParentTitle").html(retVal.dt_model[0]["ShowName"]);
                     $(".zt").html(retVal.zt + "单");
                     $(".dd").html(retVal.dd + "单");
