@@ -376,6 +376,10 @@ public class Model
 
             sql = "select YunDanDenno from YunDanIsArrive";
             DataTable dt_dan = db.ExecuteDataTable(sql);
+
+            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select YunDanDenno from YunDan where IsBangding = 1 and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'" + conn + ")";
+            DataTable dt_yundandistance = db.ExecuteDataTable(sql);
+
             int zt = 0;
             int dd = 0;
             int fc = 0;
@@ -435,11 +439,30 @@ public class Model
                         {
                             //Hashtable ht = Route.getMapRoute(dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString(), dt.Rows[i]["DaoDaZhan_lng"].ToString() + "," + dt.Rows[i]["DaoDaZhan_lat"].ToString());
                             //double distance = GetDistance(Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lat"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlat"].ToString()), Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lng"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlng"].ToString()));
-                            double distance = GetDistance(Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lng"].ToString()), Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lat"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlng"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlat"].ToString()));
-                            string duration = "";
+
+                            double distance = 0;
+                            double duration = 0;
                             string distance_str = "";
-                            distance_str = "<p style='margin:0;font-size:13px'>剩余里程：" + (distance / 1000).ToString("F2") + "公里</p>";
-                            duration = "<p style='margin:0;font-size:13px'>剩余时间：" + (Convert.ToDecimal((distance / 80000))).ToString("F2") + "小时</p>";
+                            string duration_str = "";
+                            DataRow[] drs_distance = dt_yundandistance.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"].ToString() + "'");
+                            if (drs_distance.Length > 0)
+                            {
+                                if (!string.IsNullOrEmpty(drs_distance[0]["Gps_distance"].ToString()))
+                                    distance = Convert.ToDouble(drs_distance[0]["Gps_distance"]);
+                                if (!string.IsNullOrEmpty(drs_distance[0]["Gps_duration"].ToString()))
+                                    duration = Convert.ToDouble(drs_distance[0]["Gps_duration"]);
+                            }
+
+                            if(distance==0)
+                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：暂无</p>";
+                            else
+                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：" + distance + "公里</p>";
+
+                            if (duration == 0)
+                                duration_str = "<p style='margin:0;font-size:13px'>剩余时间：暂无</p>";
+                            else
+                                duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + duration + "分钟</p>";
+                            
                             dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
                             string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
                             dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
@@ -448,8 +471,8 @@ public class Model
                                                     + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
-                                                    //+ distance_str
-                                                    //+ duration
+                                                    + distance_str
+                                                    + duration_str
                                                     + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
                                                     + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
                                                     + "</div>"
