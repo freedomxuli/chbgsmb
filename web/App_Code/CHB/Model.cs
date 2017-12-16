@@ -519,8 +519,18 @@ public class Model
                             if (duration == 0)
                                 duration_str = "<p style='margin:0;font-size:13px'>剩余时间：暂无</p>";
                             else
-                                duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + duration + "分钟</p>";
-                            
+                            {
+                                int hour = 0;
+                                int minute = 0;
+                                if (Convert.ToInt32(duration / 60) == 0)
+                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
+                                else
+                                {
+                                    hour = Convert.ToInt32(duration / 60);
+                                    minute = Convert.ToInt32(duration % 60);
+                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
+                                }
+                            }
                             dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
                             string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
                             dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
