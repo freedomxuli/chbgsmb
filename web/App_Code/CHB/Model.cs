@@ -351,10 +351,65 @@ public class Model
     }
 
     [CSMethod("GetDetailsByView")]
-    public object GetDetailsByView(string ID, string UserName)
+    public object GetDetailsByView(string ID, string UserName,string UserDenno,string year_qs,string month_qs,string day_qs,string year_dd,string month_dd,string day_dd)
     {
         using (var db = new DBConnection())
         {
+            if (month_qs == "1" || month_qs == "3" || month_qs == "5" || month_qs == "7" || month_qs == "8" || month_qs == "10" || month_qs == "12")
+            {
+
+            }
+            else
+            {
+                if (day_qs == "31" || day_qs == "30" || day_qs == "29")
+                {
+                    if (month_qs != "2")
+                    {
+                        if (day_qs == "31")
+                            day_qs = "30";
+                    }
+                    else
+                    {
+                        if (Int32.Parse(year_qs) % 4 == 0)
+                        {
+                            day_qs = "29";
+                        }
+                        else
+                        {
+                            day_qs = "28";
+                        }
+                    }
+                }
+            }
+            if (month_dd == "1" || month_dd == "3" || month_dd == "5" || month_dd == "7" || month_dd == "8" || month_dd == "10" || month_dd == "12")
+            {
+
+            }
+            else
+            {
+                if (day_dd == "31" || day_dd == "30" || day_dd == "29")
+                {
+                    if (month_dd != "2")
+                    {
+                        if (day_dd == "31")
+                            day_dd = "30";
+                    }
+                    else
+                    {
+                        if (Int32.Parse(year_dd) % 4 == 0)
+                        {
+                            day_dd = "29";
+                        }
+                        else
+                        {
+                            day_dd = "28";
+                        }
+                    }
+                }
+            }
+            DateTime qs_date = new DateTime(Int32.Parse(year_qs), Int32.Parse(month_qs), Int32.Parse(day_qs), 0, 0, 0);
+            DateTime dd_date = new DateTime(Int32.Parse(year_dd), Int32.Parse(month_dd), Int32.Parse(day_dd), 23, 59, 59);
+
             string sql = "select * from CompanyModel where ID = @ID";
             SqlCommand cmd = db.CreateCommand(sql);
             cmd.Parameters.Add("@ID", ID);
@@ -368,6 +423,9 @@ public class Model
             string conn = "";
             if (!string.IsNullOrEmpty(UserName))
                 conn += " and UserID in (select UserID from [dbo].[User] where UserName = '" + UserName + "')";
+            if (!string.IsNullOrEmpty(UserDenno))
+                conn += " and UserDenno like '%" + UserDenno + "%'";
+            conn += " and BangDingTime >= '" + qs_date + "' and BangDingTime < '" + dd_date + "'";
             sql = "select * from YunDan where IsBangding = 1 and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'" + conn;
             DataTable dt = db.ExecuteDataTable(sql);
             dt.Columns.Add("jingweidu");

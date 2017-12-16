@@ -51,7 +51,117 @@
     <form id="form1" runat="server">
     <table width="100%" height="100%" cellspacing="0" cellpadding="0" border="0">
         <tr class="wintitle">
-            <td colspan="2" style="border-bottom:2px solid #808080;" align="center"><div class="Title ParentTitle"></div><div class="Title SonTitle">&nbsp;</div><div style="float:right;"><img src="../Images/sm1.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">在途</span>&nbsp;<span style="font-size:12px;" class="zt"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">到达</span>&nbsp;<span style="font-size:12px;" class="dd"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">返程</span>&nbsp;<span style="font-size:12px;" class="fc"></span>&nbsp;</div></td>
+            <td colspan="2" style="border-bottom:2px solid #808080;" align="center">
+                <div class="Title ParentTitle"></div>
+                <div class="Title SonTitle">&nbsp;</div>
+                <div style="float:left;margin:5px;">
+                    <input type="text" id ="search_mc" placeholder="请输入查询单号" style="width:130px;" />
+                    <select id="year_qs">
+                      <option value ="2017">2017</option>
+                      <option value ="2018">2018</option>
+                    </select>
+                    <select id="month_qs">
+                      <option value ="1">1</option>
+                      <option value ="2">2</option>
+                      <option value ="3">3</option>
+                      <option value ="4">4</option>
+                      <option value ="5">5</option>
+                      <option value ="6">6</option>
+                      <option value ="7">7</option>
+                      <option value ="8">8</option>
+                      <option value ="9">9</option>
+                      <option value ="10">10</option>
+                      <option value ="11">11</option>
+                      <option value ="12">12</option>
+                    </select>
+                    <select id="day_qs">
+                      <option value ="1">1</option>
+                      <option value ="2">2</option>
+                      <option value ="3">3</option>
+                      <option value ="4">4</option>
+                      <option value ="5">5</option>
+                      <option value ="6">6</option>
+                      <option value ="7">7</option>
+                      <option value ="8">8</option>
+                      <option value ="9">9</option>
+                      <option value ="10">10</option>
+                      <option value ="11">11</option>
+                      <option value ="12">12</option>
+                      <option value ="13">13</option>
+                      <option value ="14">14</option>
+                      <option value ="15">15</option>
+                      <option value ="16">16</option>
+                      <option value ="17">17</option>
+                      <option value ="18">18</option>
+                      <option value ="19">19</option>
+                      <option value ="20">20</option>
+                      <option value ="21">21</option>
+                      <option value ="22">22</option>
+                      <option value ="23">23</option>
+                      <option value ="24">24</option>
+                      <option value ="25">25</option>
+                      <option value ="26">26</option>
+                      <option value ="27">27</option>
+                      <option value ="28">28</option>
+                      <option value ="29">29</option>
+                      <option value ="30">30</option>
+                      <option value ="31">31</option>
+                    </select>
+                    ~
+                    <select id="year_dd">
+                      <option value ="2017">2017</option>
+                      <option value ="2018" selected = "selected">2018</option>
+                    </select>
+                    <select id="month_dd">
+                      <option value ="1">1</option>
+                      <option value ="2">2</option>
+                      <option value ="3">3</option>
+                      <option value ="4">4</option>
+                      <option value ="5">5</option>
+                      <option value ="6">6</option>
+                      <option value ="7">7</option>
+                      <option value ="8">8</option>
+                      <option value ="9">9</option>
+                      <option value ="10">10</option>
+                      <option value ="11">11</option>
+                      <option value ="12" selected = "selected">12</option>
+                    </select>
+                    <select id="day_dd">
+                      <option value ="1">1</option>
+                      <option value ="2">2</option>
+                      <option value ="3">3</option>
+                      <option value ="4">4</option>
+                      <option value ="5">5</option>
+                      <option value ="6">6</option>
+                      <option value ="7">7</option>
+                      <option value ="8">8</option>
+                      <option value ="9">9</option>
+                      <option value ="10">10</option>
+                      <option value ="11">11</option>
+                      <option value ="12">12</option>
+                      <option value ="13">13</option>
+                      <option value ="14">14</option>
+                      <option value ="15">15</option>
+                      <option value ="16">16</option>
+                      <option value ="17">17</option>
+                      <option value ="18">18</option>
+                      <option value ="19">19</option>
+                      <option value ="20">20</option>
+                      <option value ="21">21</option>
+                      <option value ="22">22</option>
+                      <option value ="23">23</option>
+                      <option value ="24">24</option>
+                      <option value ="25">25</option>
+                      <option value ="26">26</option>
+                      <option value ="27">27</option>
+                      <option value ="28">28</option>
+                      <option value ="29">29</option>
+                      <option value ="30">30</option>
+                      <option value ="31" selected = "selected">31</option>
+                    </select>
+                    <a href="javascript:void(0);" style="border:0px;background-color:#229ffd;color:#ffffff;cursor:pointer;border-radius:20px;padding:5px 10px 5px 10px;text-decoration:none;" onclick="searchmap();">查询</a>
+                </div>
+                <div style="float:right;margin-top:10px;"><img src="../Images/sm1.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">在途</span>&nbsp;<span style="font-size:12px;" class="zt"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">到达</span>&nbsp;<span style="font-size:12px;" class="dd"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">返程</span>&nbsp;<span style="font-size:12px;" class="fc"></span>&nbsp;</div></td>
         </tr>
         <tr>
             <td width="10%" style="border-right:2px solid #808080;background-color:#ffffcc;" valign="top">
@@ -75,6 +185,13 @@
         var isautofresh = true;
         var num = 0;
         var jsnum = 0;
+        var UserDenno = "";
+        var year_qs = "";
+        var month_qs = "";
+        var day_qs = "";
+        var year_dd = "";
+        var month_dd = "";
+        var day_dd = "";
         $(function () {
             var wheight = $(window).height();
             wincontent = wheight - 78;
@@ -116,7 +233,20 @@
             $("#mapshow").val("自动刷新(" + (60 - num) + ")秒");
         }
 
+        function searchmap()
+        {
+            GetData(gsid, user);
+        }
+
         function GetData(id, username) {
+            UserDenno = $("#search_mc").val();
+            year_qs = $("#year_qs").val();
+            month_qs = $("#month_qs").val();
+            day_qs = $("#day_qs").val();
+            year_dd = $("#year_dd").val();
+            month_dd = $("#month_dd").val();
+            day_dd = $("#day_dd").val();
+
             ACS('CZCLZ.Model.GetDetailsByView', function (retVal) {
                 if (retVal) {
                     $("title").html(retVal.dt_model[0]["ShowName"]);
@@ -144,7 +274,7 @@
                         addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
                     }
                 }
-            }, CS.onError, id, username);
+            }, CS.onError, id, username, UserDenno, year_qs, month_qs, day_qs, year_dd, month_dd, day_dd);
         }
     </script>
     <script type="text/javascript">
