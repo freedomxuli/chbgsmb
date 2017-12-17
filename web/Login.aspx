@@ -73,7 +73,7 @@ body,td,th {
               </table>--%>
               <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td width="550" background="images/dl22_r3_c1.jpg"><img id="ewm" src="" style="margin-left:280px;margin-top:30px;" /></td><%--二维码 --%>
+                  <td width="550" background="images/dl22_r3_c1.jpg"></td><%--二维码 --%>
                   <td valign="top" background="images/dl22_r3_c2.jpg"><table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td height="96" align="right">&nbsp;</td>

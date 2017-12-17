@@ -22,6 +22,11 @@ public class MenuControl
                    <Tab p='' Name='制作模板'>approot/r/page/ZZMB/mbList.html</Tab>
                 </Item>
             </Menu>
+            <Menu Name='查货宝制作模板'>            
+                <Item Name='查货宝制作模板'>
+                   <Tab p='' Name='查货宝制作模板'>approot/r/page/ZZMB/CHBmbList.html</Tab>
+                </Item>
+            </Menu>
             <Menu Name='基础管理'>            
                 <Item Name='公司对应设置'>
                    <Tab p='' Name='公司对应设置'>approot/r/page/JCGL/GSSZ.html</Tab>
