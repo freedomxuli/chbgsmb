@@ -60,7 +60,7 @@ public class MyJob : IJob
             try
             {
                 db.BeginTransaction();
-                string sql = "select * from YunDan where SuoShuGongSi in (select Name from CompanyModel) and IsBangding = 1";
+                string sql = "select * from YunDan where IsBangding = 1";
                 DataTable dt = db.ExecuteDataTable(sql);
 
                 sql = "select YunDanDenno from YunDanIsArrive";
