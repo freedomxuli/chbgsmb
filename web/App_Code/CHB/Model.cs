@@ -686,6 +686,45 @@ public class Model
                     string DaoDaZhan = dt.Rows[i]["DaoDaZhan"].ToString().Replace(" ", "");
                     string[] LastZhanArray = dt.Rows[i]["Gps_lastinfo"].ToString().Split(' ');
                     string LastZhan = "";
+                    string SalePerson = "";
+                    string Purchaser = "";
+                    string PurchaserPerson = "";
+                    string PurchaserTel = "";
+                    string CarrierCompany = "";
+                    string CarrierPerson = "";
+                    string CarrierTel = "";
+                    string DaoDaAddress = "";
+                    string QiShiAddress = "";
+                    string QiShiZhan_QX = string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_QX"].ToString()) ? "" : dt.Rows[i]["QiShiZhan_QX"].ToString();
+                    string DaoDaZhan_QX = string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_QX"].ToString()) ? "" : dt.Rows[i]["DaoDaZhan_QX"].ToString();
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["SalePerson"].ToString()))
+                        SalePerson = "<p style='margin:0;font-size:13px'>销售员：" + dt.Rows[i]["SalePerson"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
+                        Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserPerson"].ToString()))
+                        PurchaserPerson = "<p style='margin:0;font-size:13px'>收货人：" + dt.Rows[i]["PurchaserPerson"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserTel"].ToString()))
+                        PurchaserTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["PurchaserTel"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierCompany"].ToString()))
+                        CarrierCompany = "<p style='margin:0;font-size:13px'>承运公司：" + dt.Rows[i]["CarrierCompany"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierPerson"].ToString()))
+                        CarrierPerson = "<p style='margin:0;font-size:13px'>负责人：" + dt.Rows[i]["CarrierPerson"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierTel"].ToString()))
+                        CarrierTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["CarrierTel"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["DaoDaAddress"].ToString()))
+                        DaoDaAddress = "<p style='margin:0;font-size:13px'>目的地详细地址：" + dt.Rows[i]["DaoDaAddress"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["QiShiAddress"].ToString()))
+                        QiShiAddress = "<p style='margin:0;font-size:13px'>出发地详细地址：" + dt.Rows[i]["QiShiAddress"] + "</p>";
+
                     if (LastZhanArray.Length >= 2)
                     {
                         LastZhan = LastZhanArray[0] + LastZhanArray[1];
@@ -696,9 +735,18 @@ public class Model
                         string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
                         dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
                                                  "<HR style='border:1 solid #2828FF' width='100%'>"
-                                                 + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
+                                                 + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
                                                 + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
                                                 + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                + SalePerson
+                                                + Purchaser
+                                                + PurchaserPerson
+                                                + PurchaserTel
+                                                + CarrierCompany
+                                                + CarrierPerson
+                                                + CarrierTel
+                                                + DaoDaAddress
+                                                + QiShiAddress
                                                 + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
                                                 + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
                                                 + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
@@ -718,9 +766,18 @@ public class Model
                             string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
                             dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
                                                      "<HR style='border:1 solid #2828FF' width='100%'>"
-                                                     + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
+                                                     + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                    + SalePerson
+                                                    + Purchaser
+                                                    + PurchaserPerson
+                                                    + PurchaserTel
+                                                    + CarrierCompany
+                                                    + CarrierPerson
+                                                    + CarrierTel
+                                                    + DaoDaAddress
+                                                    + QiShiAddress
                                                     + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
                                                     + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
                                                     + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
@@ -773,9 +830,18 @@ public class Model
                             string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
                             dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
                                                      "<HR style='border:1 solid #2828FF' width='100%'>"
-                                                     + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + ">>>" + dt.Rows[i]["DaoDaZhan"] + "</p>"
+                                                    + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
                                                     + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                    + SalePerson
+                                                    + Purchaser
+                                                    + PurchaserPerson
+                                                    + PurchaserTel
+                                                    + CarrierCompany
+                                                    + CarrierPerson
+                                                    + CarrierTel
+                                                    + DaoDaAddress
+                                                    + QiShiAddress
                                                     + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
                                                     + distance_str
                                                     + duration_str
