@@ -658,13 +658,14 @@ public class Model
             cmd.Parameters.Add("@ID", ID);
             DataTable dt_child = db.ExecuteDataTable(cmd);
 
-            string conn = "";
+            string conn = " and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'";
+
             if (!string.IsNullOrEmpty(UserName))
-                conn += " and UserID in (select UserID from [dbo].[User] where UserName = '" + UserName + "')";
+                conn += " and a.UserID in (select UserID from [dbo].[User] where UserName = '" + UserName + "')";
             if (!string.IsNullOrEmpty(UserDenno))
                 conn += " and UserDenno like '%" + UserDenno + "%'";
             conn += " and BangDingTime >= '" + qs_date + "' and BangDingTime < '" + dd_date + "'";
-            sql = "select * from YunDan where IsBangding = 1 and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'" + conn;
+            sql = "select a.* from YunDan a where IsBangding = 1" + conn;
             DataTable dt = db.ExecuteDataTable(sql);
             dt.Columns.Add("jingweidu");
             dt.Columns.Add("markinfo");
@@ -673,12 +674,23 @@ public class Model
             sql = "select YunDanDenno from YunDanIsArrive";
             DataTable dt_dan = db.ExecuteDataTable(sql);
 
-            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select YunDanDenno from YunDan where IsBangding = 1 and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'" + conn + ")";
+            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select a.YunDanDenno from YunDan a where IsBangding = 1" + conn + ")";
             DataTable dt_yundandistance = db.ExecuteDataTable(sql);
 
+            sql = @"select a.* from YunDan a 
+                    inner join (
+	                    select DATEDIFF(mi,dateadd(SS,duration,getdate()),dateadd(HH,a.Expect_Hour,a.BangDingTime)) TimeCZ,a.YunDanDenno from YunDan a
+	                    inner join (select *,cast(Gps_duration as decimal) duration from YunDanDistance where Gps_duration is not null) b on a.YunDanDenno = b.YunDanDenno
+	                    where a.Expect_Hour is not null and a.IsBangding = 1 " + conn + @"
+                    ) b on a.YunDanDenno = b.YunDanDenno
+                    where a.IsBangding = 1 and TimeCZ < 0" + conn + @" order by BangDingTime desc";
+            DataTable dt_yj = db.ExecuteDataTable(sql);
+
+            int qb = 0;
             int zt = 0;
             int dd = 0;
             int fc = 0;
+            int yj = dt_yj.Rows.Count;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 if (!string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lng"].ToString()))
@@ -701,14 +713,14 @@ public class Model
                     if (!string.IsNullOrEmpty(dt.Rows[i]["SalePerson"].ToString()))
                         SalePerson = "<p style='margin:0;font-size:13px'>销售员：" + dt.Rows[i]["SalePerson"] + "</p>";
 
-                    if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
-                        Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
+                    //    Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
 
-                    if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserPerson"].ToString()))
-                        PurchaserPerson = "<p style='margin:0;font-size:13px'>收货人：" + dt.Rows[i]["PurchaserPerson"] + "</p>";
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserPerson"].ToString()))
+                    //    PurchaserPerson = "<p style='margin:0;font-size:13px'>收货人：" + dt.Rows[i]["PurchaserPerson"] + "</p>";
 
-                    if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserTel"].ToString()))
-                        PurchaserTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["PurchaserTel"] + "</p>";
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserTel"].ToString()))
+                    //    PurchaserTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["PurchaserTel"] + "</p>";
 
                     if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierCompany"].ToString()))
                         CarrierCompany = "<p style='margin:0;font-size:13px'>承运公司：" + dt.Rows[i]["CarrierCompany"] + "</p>";
@@ -851,14 +863,25 @@ public class Model
                                                     + "<HR style='border:1 solid #2828FF' width='100%'>"
                                                     + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
 
-                            dt.Rows[i]["ZT"] = "0";//在途
+                            DataRow[] drs_yj = dt_yj.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"] + "'");
+                            if (drs_yj.Length > 0)
+                            {
+                                dt.Rows[i]["ZT"] = "4";//预警
+                                yj++;
+                            }
+                            else
+                            {
+                                dt.Rows[i]["ZT"] = "0";//在途
+                            }
                             zt++;
                         }
                     }
                 }
             }
 
-            return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc };
+            qb = zt + dd + fc;
+
+            return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc, qb = qb, yj = yj };
         }
     }
 
@@ -935,13 +958,13 @@ public class Model
 
             string conn = "";
             if (!string.IsNullOrEmpty(CompanyModelChildId))
-                conn += " and UserID in (select UserID from [dbo].[User] where UserName in (select UserName from CompanyModelChild where MID = '" + CompanyModelChildId + "'))";
+                conn += " and a.UserID in (select UserID from [dbo].[User] where UserName in (select UserName from CompanyModelChild where MID = '" + CompanyModelChildId + "'))";
             if (!string.IsNullOrEmpty(UserDenno))
                 conn += " and UserDenno like '%" + UserDenno + "%'";
             if (!string.IsNullOrEmpty(SuoShuGongSi))
                 conn += " and SuoShuGongSi = '" + SuoShuGongSi + "'";
             conn += " and BangDingTime >= '" + qs_date + "' and BangDingTime < '" + dd_date + "'";
-            sql = "select * from YunDan where IsBangding = 1 " + conn;
+            sql = "select a.* from YunDan a where IsBangding = 1 " + conn;
             DataTable dt = db.ExecuteDataTable(sql);
             dt.Columns.Add("jingweidu");
             dt.Columns.Add("markinfo");
@@ -950,12 +973,23 @@ public class Model
             sql = "select YunDanDenno from YunDanIsArrive";
             DataTable dt_dan = db.ExecuteDataTable(sql);
 
-            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select YunDanDenno from YunDan where IsBangding = 1 " + conn + ")";
+            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select a.YunDanDenno from YunDan a where IsBangding = 1 " + conn + ")";
             DataTable dt_yundandistance = db.ExecuteDataTable(sql);
 
+            sql = @"select a.* from YunDan a 
+                    inner join (
+	                    select DATEDIFF(mi,dateadd(SS,duration,getdate()),dateadd(HH,a.Expect_Hour,a.BangDingTime)) TimeCZ,a.YunDanDenno from YunDan a
+	                    inner join (select *,cast(Gps_duration as decimal) duration from YunDanDistance where Gps_duration is not null) b on a.YunDanDenno = b.YunDanDenno
+	                    where a.Expect_Hour is not null and a.IsBangding = 1 " + conn + @"
+                    ) b on a.YunDanDenno = b.YunDanDenno
+                    where a.IsBangding = 1 and TimeCZ < 0" + conn + @" order by BangDingTime desc";
+            DataTable dt_yj = db.ExecuteDataTable(sql);
+
+            int qb = 0;
             int zt = 0;
             int dd = 0;
             int fc = 0;
+            int yj = dt_yj.Rows.Count;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 if (!string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lng"].ToString()))
@@ -1062,14 +1096,25 @@ public class Model
                                                     + "<HR style='border:1 solid #2828FF' width='100%'>"
                                                     + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
 
-                            dt.Rows[i]["ZT"] = "0";//在途
+                            DataRow[] drs_yj = dt_yj.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"] + "'");
+                            if (drs_yj.Length > 0)
+                            {
+                                dt.Rows[i]["ZT"] = "4";//预警
+                                yj++;
+                            }
+                            else
+                            {
+                                dt.Rows[i]["ZT"] = "0";//在途
+                            }
                             zt++;
                         }
                     }
                 }
             }
 
-            return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc };
+            qb = zt + dd + fc;
+
+            return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc, qb = qb, yj = yj };
         }
     }
 

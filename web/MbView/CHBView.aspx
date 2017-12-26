@@ -161,7 +161,7 @@
                     </select>
                     <a href="javascript:void(0);" style="border:0px;background-color:#229ffd;color:#ffffff;cursor:pointer;border-radius:20px;padding:5px 10px 5px 10px;text-decoration:none;" onclick="searchmap();">查询</a>
                 </div>
-                <div style="float:right;margin-top:10px;"><img src="../Images/sm1.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">在途</span>&nbsp;<span style="font-size:12px;" class="zt"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">到达</span>&nbsp;<span style="font-size:12px;" class="dd"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5"/>&nbsp;<span style="font-size:12px;">返程</span>&nbsp;<span style="font-size:12px;" class="fc"></span>&nbsp;</div></td>
+                <div style="float:right;margin-top:10px;"><span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(0);">全部</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="qb" onclick="ChangeKind(0);"></span>&nbsp;<img src="../Images/sm4.png" width="10" height="5" onclick="ChangeKind(4);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(4);">预警</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="yj" onclick="ChangeKind(4);"></span>&nbsp;<img src="../Images/sm1.png" width="10" height="5" onclick="ChangeKind(1);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(1);">在途</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="zt" onclick="ChangeKind(1);"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5" onclick="ChangeKind(2);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(2);">到达</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="dd" onclick="ChangeKind(2);"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5" onclick="ChangeKind(3);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(3);">返程</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="fc" onclick="ChangeKind(3);"></span>&nbsp;</div></td>
         </tr>
         <tr>
             <td width="10%" style="border-right:2px solid #808080;background-color:#ffffcc;" valign="top">
@@ -182,6 +182,7 @@
     <script type="text/javascript">
         var gsid = "";
         var user = "";
+        var lx = "0";
         var company = "";
         var isautofresh = true;
         var num = 0;
@@ -216,6 +217,11 @@
         //    zoom: 10,
         //    center: [116.480983, 40.0958]
         //});
+
+        function ChangeKind(kind) {
+            lx = kind;
+            GetData(gsid, user, company);
+        }
 
         function freshlable() {
             if (isautofresh == false) {
@@ -272,7 +278,23 @@
                     });
                     cleatmarks();
                     for (var i = 0; i < retVal.dt.length; i++) {
-                        addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        if (lx == "0") {
+                            addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        }
+                        else if (lx == "1") {
+
+                            if (retVal.dt[i]["ZT"] == "0" || retVal.dt[i]["ZT"] == "4")
+                                addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        } else if (lx == "2") {
+                            if (retVal.dt[i]["ZT"] == "1")
+                                addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        } else if (lx == "3") {
+                            if (retVal.dt[i]["ZT"] == "2")
+                                addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        } else if (lx == "4") {
+                            if (retVal.dt[i]["ZT"] == "4")
+                                addmaker(retVal.dt[i]["jingweidu"].split(","), "", retVal.dt[i]["markinfo"], retVal.dt[i]["ZT"]);
+                        }
                     }
                 }
             }, CS.onError, id, username, company, UserDenno, year_qs, month_qs, day_qs, year_dd, month_dd, day_dd);
@@ -309,6 +331,8 @@
                 iconUrl = "../Images/zaitu2.png";
             else if (z == "2")
                 iconUrl = "../Images/zaitu3.png";
+            else if (z == "4")
+                iconUrl = "../Images/yj.png";
             var marker = new AMap.Marker({
                 position: p,
                 map: map,
