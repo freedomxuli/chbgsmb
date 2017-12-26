@@ -819,23 +819,23 @@ public class Model
                             }
 
                             if(distance==0)
-                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：暂无</p>";
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：暂无</p>";
                             else
-                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：" + distance + "公里</p>";
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：" + distance + "公里</p>";
 
                             if (duration == 0)
-                                duration_str = "<p style='margin:0;font-size:13px'>剩余时间：暂无</p>";
+                                duration_str = "<p style='margin:0;font-size:13px；color:blue;font-weight:bold;'>剩余时间：暂无</p>";
                             else
                             {
                                 int hour = 0;
                                 int minute = 0;
                                 if (Convert.ToInt32(duration / 60) == 0)
-                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
                                 else
                                 {
                                     hour = Convert.ToInt32(duration / 60);
                                     minute = Convert.ToInt32(duration % 60);
-                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
                                 }
                             }
                             dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
@@ -867,7 +867,6 @@ public class Model
                             if (drs_yj.Length > 0)
                             {
                                 dt.Rows[i]["ZT"] = "4";//预警
-                                yj++;
                             }
                             else
                             {
@@ -1061,23 +1060,23 @@ public class Model
                             }
 
                             if (distance == 0)
-                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：暂无</p>";
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：暂无</p>";
                             else
-                                distance_str = "<p style='margin:0;font-size:13px'>剩余里程：" + distance + "公里</p>";
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：" + distance + "公里</p>";
 
                             if (duration == 0)
-                                duration_str = "<p style='margin:0;font-size:13px'>剩余时间：暂无</p>";
+                                duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：暂无</p>";
                             else
                             {
                                 int hour = 0;
                                 int minute = 0;
                                 if (Convert.ToInt32(duration / 60) == 0)
-                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
                                 else
                                 {
                                     hour = Convert.ToInt32(duration / 60);
                                     minute = Convert.ToInt32(duration % 60);
-                                    duration_str = "<p style='margin:0;font-size:13px'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
                                 }
                             }
                             dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
@@ -1100,7 +1099,6 @@ public class Model
                             if (drs_yj.Length > 0)
                             {
                                 dt.Rows[i]["ZT"] = "4";//预警
-                                yj++;
                             }
                             else
                             {

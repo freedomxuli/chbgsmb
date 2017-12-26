@@ -257,6 +257,8 @@
                 if (retVal) {
                     $("title").html(retVal.dt_model[0]["ShowName"]);
                     $(".ParentTitle").html(retVal.dt_model[0]["ShowName"]);
+                    $(".qb").html(retVal.qb + "单");
+                    $(".yj").html(retVal.yj + "单");
                     $(".zt").html(retVal.zt + "单");
                     $(".dd").html(retVal.dd + "单");
                     $(".fc").html(retVal.fc + "单");
