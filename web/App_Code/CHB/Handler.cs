@@ -1282,7 +1282,7 @@ public class Handler
     {
         using(var db = new DBConnection())
         {
-            string sql = "select * from [dbo].[User] where UserName = @UserName";
+            string sql = "select * from [dbo].[User] where UserName = @UserName and UserLeiXing = 'APP'";
             SqlCommand cmd = db.CreateCommand(sql);
             cmd.Parameters.AddWithValue("@UserName", UserName);
             DataTable dt = db.ExecuteDataTable(cmd);
