@@ -663,7 +663,7 @@ public class Model
             if (!string.IsNullOrEmpty(UserName))
                 conn += " and a.UserID in (select UserID from [dbo].[User] where UserName = '" + UserName + "')";
             if (!string.IsNullOrEmpty(UserDenno))
-                conn += " and UserDenno like '%" + UserDenno + "%'";
+                conn += " and a.UserDenno like '%" + UserDenno + "%'";
             conn += " and BangDingTime >= '" + qs_date + "' and BangDingTime < '" + dd_date + "'";
             sql = "select a.* from YunDan a where IsBangding = 1" + conn;
             DataTable dt = db.ExecuteDataTable(sql);
