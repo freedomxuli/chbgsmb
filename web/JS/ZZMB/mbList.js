@@ -5,11 +5,19 @@ var MbStore = createSFW4Store({
     total: 1,
     currentPage: 1,
     fields: [
-        'ID', 'Name', 'ShowName', 'Addtime'
+        'ID', 'Name', 'ShowName', 'RuleKind', 'Addtime'
     ],
     onPageChange: function (sto, nPage, sorters) {
         DataBind(nPage);
     }
+});
+
+var ruleStore = Ext.create('Ext.data.Store', {
+    fields: ['ID', 'MC'],
+    data: [
+        { 'ID': 1, 'MC': '完全匹配' },
+        { 'ID': 2, 'MC': '前缀' }
+    ]
 });
 
 var yglwlStore = Ext.create('Ext.data.Store', {
@@ -59,6 +67,20 @@ Ext.onReady(function () {
                                 sortable: false,
                                 menuDisabled: true,
                                 text: '模板标题'
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'RuleKind',
+                                width: 180,
+                                sortable: false,
+                                menuDisabled: true,
+                                text: '规则',
+                                renderer: function (value, cellmeta, record, rowIndex, columnIndex, store) {
+                                    if (value == 1)
+                                        return "完全匹配";
+                                    else
+                                        return "前缀";
+                                }
                             },
                             {
                                 xtype: 'datecolumn',
@@ -375,6 +397,19 @@ Ext.define('AddMb', {
                             columnWidth: 1,
                             id: 'ShowNameAdd',
                             padding: '0 10 50 10'
+                        },
+                        {
+                            xtype: 'combobox',
+                            fieldLabel: '规则',
+                            valueField: 'ID',
+                            displayField: 'MC',
+                            queryMode: 'local',
+                            editable: false,
+                            store: ruleStore,
+                            labelWidth: 70,
+                            columnWidth: 1,
+                            id: 'RuleKind',
+                            padding: '0 10 50 10'
                         }
                     ],
                     buttonAlign: 'center',
@@ -389,6 +424,10 @@ Ext.define('AddMb', {
                                 }
                                 if (Ext.getCmp("ShowNameAdd").getValue() == "" || Ext.getCmp("ShowNameAdd").getValue() == null) {
                                     Ext.Msg.alert("提示", "模板标题不能为空！");
+                                    return false;
+                                }
+                                if (Ext.getCmp("RuleKind").getValue() == "" || Ext.getCmp("RuleKind").getValue() == null) {
+                                    Ext.Msg.alert("提示", "规则不能为空！");
                                     return false;
                                 }
                                 var NameAdd = Ext.getCmp("NameAdd").getValue();
@@ -407,7 +446,7 @@ Ext.define('AddMb', {
                                             }
                                         });
                                     }
-                                }, CS.onError, Ext.getCmp("NameAdd").getValue(), Ext.getCmp("ShowNameAdd").getValue());
+                                }, CS.onError, Ext.getCmp("NameAdd").getValue(), Ext.getCmp("ShowNameAdd").getValue(), Ext.getCmp("RuleKind").getValue());
                             }
                         }
                     ]
@@ -458,6 +497,19 @@ Ext.define('XGMb', {
                             columnWidth: 1,
                             id: 'ShowNameAdd',
                             padding: '0 10 50 10'
+                        },
+                        {
+                            xtype: 'combobox',
+                            fieldLabel: '规则',
+                            valueField: 'ID',
+                            displayField: 'MC',
+                            queryMode: 'local',
+                            editable: false,
+                            store: ruleStore,
+                            labelWidth: 70,
+                            columnWidth: 1,
+                            id: 'RuleKind',
+                            padding: '0 10 50 10'
                         }
                     ],
                     buttonAlign: 'center',
@@ -474,6 +526,10 @@ Ext.define('XGMb', {
                                     Ext.Msg.alert("提示", "模板标题不能为空！");
                                     return false;
                                 }
+                                if (Ext.getCmp("RuleKind").getValue() == "" || Ext.getCmp("RuleKind").getValue() == null) {
+                                    Ext.Msg.alert("提示", "规则不能为空！");
+                                    return false;
+                                }
                                 CS('CZCLZ.Model.XGModel', function (retVal) {
                                     if (retVal) {
                                         Ext.Msg.alert("提示", "修改成功！", function (btn) {
@@ -481,7 +537,7 @@ Ext.define('XGMb', {
                                             me.close();
                                         });
                                     }
-                                }, CS.onError, me.MID, Ext.getCmp("NameAdd").getValue(), Ext.getCmp("ShowNameAdd").getValue());
+                                }, CS.onError, me.MID, Ext.getCmp("NameAdd").getValue(), Ext.getCmp("ShowNameAdd").getValue(), Ext.getCmp("RuleKind").getValue());
                             }
                         }
                     ]
@@ -611,6 +667,7 @@ function Xg(mid) {
             win.show(null, function () {
                 Ext.getCmp("NameAdd").setValue(retVal[0]["Name"]);
                 Ext.getCmp("ShowNameAdd").setValue(retVal[0]["ShowName"]);
+                Ext.getCmp("RuleKind").setValue(retVal[0]["RuleKind"]);
             });
         }
     }, CS.onError, mid);

@@ -174,7 +174,7 @@ public class Model
     }
 
     [CSMethod("AddModel")]
-    public string AddModel(string Name, string ShowName)
+    public string AddModel(string Name, string ShowName, string RuleKind)
     {
         using (DBConnection db = new DBConnection())
         {
@@ -194,6 +194,7 @@ public class Model
                 dr["ID"] = guid;
                 dr["Name"] = Name;
                 dr["ShowName"] = ShowName;
+                dr["RuleKind"] = RuleKind;
                 dr["Addtime"] = DateTime.Now;
                 dt.Rows.Add(dr);
                 db.InsertTable(dt);
@@ -496,17 +497,18 @@ public class Model
     }
 
     [CSMethod("XGModel")]
-    public bool XGModel(string ID, string Name, string ShowName)
+    public bool XGModel(string ID, string Name, string ShowName, string RuleKind)
     {
         using (var db = new DBConnection())
         {
             try
             {
-                string sql = "update CompanyModel set Name = @Name,ShowName = @ShowName where ID = @ID";
+                string sql = "update CompanyModel set Name = @Name,ShowName = @ShowName,RuleKind = @RuleKind where ID = @ID";
                 SqlCommand cmd = db.CreateCommand(sql);
                 cmd.Parameters.Add("@ID", ID);
                 cmd.Parameters.Add("@Name", Name);
                 cmd.Parameters.Add("@ShowName", ShowName);
+                cmd.Parameters.Add("@RuleKind", RuleKind);
                 db.ExecuteNonQuery(cmd);
                 return true;
             }
@@ -659,6 +661,8 @@ public class Model
             DataTable dt_child = db.ExecuteDataTable(cmd);
 
             string conn = " and SuoShuGongSi = '" + dt_model.Rows[0]["Name"].ToString() + "'";
+            if (dt_model.Rows[0]["RuleKind"].ToString() == "2")
+                conn = " and SuoShuGongSi like '" + dt_model.Rows[0]["Name"].ToString() + "%'";
 
             if (!string.IsNullOrEmpty(UserName))
                 conn += " and a.UserID in (select UserID from [dbo].[User] where UserName = '" + UserName + "')";
@@ -713,8 +717,8 @@ public class Model
                     if (!string.IsNullOrEmpty(dt.Rows[i]["SalePerson"].ToString()))
                         SalePerson = "<p style='margin:0;font-size:13px'>销售员：" + dt.Rows[i]["SalePerson"] + "</p>";
 
-                    //if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
-                    //    Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
+                        Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
 
                     //if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserPerson"].ToString()))
                     //    PurchaserPerson = "<p style='margin:0;font-size:13px'>收货人：" + dt.Rows[i]["PurchaserPerson"] + "</p>";
@@ -731,8 +735,8 @@ public class Model
                     if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierTel"].ToString()))
                         CarrierTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["CarrierTel"] + "</p>";
 
-                    if (!string.IsNullOrEmpty(dt.Rows[i]["DaoDaAddress"].ToString()))
-                        DaoDaAddress = "<p style='margin:0;font-size:13px'>目的地详细地址：" + dt.Rows[i]["DaoDaAddress"] + "</p>";
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["DaoDaAddress"].ToString()))
+                    //    DaoDaAddress = "<p style='margin:0;font-size:13px'>目的地详细地址：" + dt.Rows[i]["DaoDaAddress"] + "</p>";
 
                     if (!string.IsNullOrEmpty(dt.Rows[i]["QiShiAddress"].ToString()))
                         QiShiAddress = "<p style='margin:0;font-size:13px'>出发地详细地址：" + dt.Rows[i]["QiShiAddress"] + "</p>";

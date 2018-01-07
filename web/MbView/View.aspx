@@ -55,111 +55,11 @@
                 <div class="Title ParentTitle"></div>
                 <div class="Title SonTitle">&nbsp;</div>
                 <div style="float:left;margin:5px;">
-                    <input type="text" id ="search_mc" placeholder="请输入查询单号" style="width:130px;" />
-                    <select id="year_qs">
-                      <option value ="2017">2017</option>
-                      <option value ="2018">2018</option>
-                    </select>
-                    <select id="month_qs">
-                      <option value ="1">1</option>
-                      <option value ="2">2</option>
-                      <option value ="3">3</option>
-                      <option value ="4">4</option>
-                      <option value ="5">5</option>
-                      <option value ="6">6</option>
-                      <option value ="7">7</option>
-                      <option value ="8">8</option>
-                      <option value ="9">9</option>
-                      <option value ="10">10</option>
-                      <option value ="11">11</option>
-                      <option value ="12">12</option>
-                    </select>
-                    <select id="day_qs">
-                      <option value ="1">1</option>
-                      <option value ="2">2</option>
-                      <option value ="3">3</option>
-                      <option value ="4">4</option>
-                      <option value ="5">5</option>
-                      <option value ="6">6</option>
-                      <option value ="7">7</option>
-                      <option value ="8">8</option>
-                      <option value ="9">9</option>
-                      <option value ="10">10</option>
-                      <option value ="11">11</option>
-                      <option value ="12">12</option>
-                      <option value ="13">13</option>
-                      <option value ="14">14</option>
-                      <option value ="15">15</option>
-                      <option value ="16">16</option>
-                      <option value ="17">17</option>
-                      <option value ="18">18</option>
-                      <option value ="19">19</option>
-                      <option value ="20">20</option>
-                      <option value ="21">21</option>
-                      <option value ="22">22</option>
-                      <option value ="23">23</option>
-                      <option value ="24">24</option>
-                      <option value ="25">25</option>
-                      <option value ="26">26</option>
-                      <option value ="27">27</option>
-                      <option value ="28">28</option>
-                      <option value ="29">29</option>
-                      <option value ="30">30</option>
-                      <option value ="31">31</option>
-                    </select>
-                    ~
-                    <select id="year_dd">
-                      <option value ="2017">2017</option>
-                      <option value ="2018" selected = "selected">2018</option>
-                    </select>
-                    <select id="month_dd">
-                      <option value ="1">1</option>
-                      <option value ="2">2</option>
-                      <option value ="3">3</option>
-                      <option value ="4">4</option>
-                      <option value ="5">5</option>
-                      <option value ="6">6</option>
-                      <option value ="7">7</option>
-                      <option value ="8">8</option>
-                      <option value ="9">9</option>
-                      <option value ="10">10</option>
-                      <option value ="11">11</option>
-                      <option value ="12" selected = "selected">12</option>
-                    </select>
-                    <select id="day_dd">
-                      <option value ="1">1</option>
-                      <option value ="2">2</option>
-                      <option value ="3">3</option>
-                      <option value ="4">4</option>
-                      <option value ="5">5</option>
-                      <option value ="6">6</option>
-                      <option value ="7">7</option>
-                      <option value ="8">8</option>
-                      <option value ="9">9</option>
-                      <option value ="10">10</option>
-                      <option value ="11">11</option>
-                      <option value ="12">12</option>
-                      <option value ="13">13</option>
-                      <option value ="14">14</option>
-                      <option value ="15">15</option>
-                      <option value ="16">16</option>
-                      <option value ="17">17</option>
-                      <option value ="18">18</option>
-                      <option value ="19">19</option>
-                      <option value ="20">20</option>
-                      <option value ="21">21</option>
-                      <option value ="22">22</option>
-                      <option value ="23">23</option>
-                      <option value ="24">24</option>
-                      <option value ="25">25</option>
-                      <option value ="26">26</option>
-                      <option value ="27">27</option>
-                      <option value ="28">28</option>
-                      <option value ="29">29</option>
-                      <option value ="30">30</option>
-                      <option value ="31" selected = "selected">31</option>
-                    </select>
-                    <a href="javascript:void(0);" style="border:0px;background-color:#229ffd;color:#ffffff;cursor:pointer;border-radius:20px;padding:5px 10px 5px 10px;text-decoration:none;" onclick="searchmap();">查询</a>
+                    <input type="text" id ="search_mc" placeholder="请输入查询单号" style="width:130px;float:left;" />
+                    <div id="startTime" style="float:left;padding-left:10px;"></div>
+                    <div style="float:left;padding-left:10px;">~</div>
+                    <div id="endTime" style="float:left;padding-left:10px;"></div>
+                    <a href="javascript:void(0);" style="border:0px;background-color:#229ffd;color:#ffffff;cursor:pointer;border-radius:20px;padding:5px 10px 5px 10px;margin-left:10px;text-decoration:none;float:left;" onclick="searchmap();">查询</a>
                 </div>
                 <div style="float:right;margin-top:10px;"><span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(0);">全部</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="qb" onclick="ChangeKind(0);"></span>&nbsp;<img src="../Images/sm4.png" width="10" height="5" onclick="ChangeKind(4);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(4);">预警</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="yj" onclick="ChangeKind(4);"></span>&nbsp;<img src="../Images/sm1.png" width="10" height="5" onclick="ChangeKind(1);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(1);">在途</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="zt" onclick="ChangeKind(1);"></span>&nbsp;<img src="../Images/sm2.png" width="10" height="5" onclick="ChangeKind(2);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(2);">到达</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="dd" onclick="ChangeKind(2);"></span>&nbsp;<img src="../Images/sm3.png" width="10" height="5" onclick="ChangeKind(3);" style="cursor:pointer;"/>&nbsp;<span style="font-size:12px;cursor:pointer;" onclick="ChangeKind(3);">返程</span>&nbsp;<span style="font-size:12px;cursor:pointer;" class="fc" onclick="ChangeKind(3);"></span>&nbsp;</div></td>
         </tr>
@@ -193,6 +93,22 @@
         var year_dd = "";
         var month_dd = "";
         var day_dd = "";
+
+        Ext.onReady(function () {
+            Ext.create('Ext.form.field.Date', {
+                renderTo: 'startTime',
+                name: 'startTime',
+                value: new Date(),
+                format: 'Y-m-d'
+            });
+            Ext.create('Ext.form.field.Date', {
+                renderTo: 'endTime',
+                name: 'endTime',
+                value: new Date(),
+                format: 'Y-m-d'
+            });
+        });
+
         $(function () {
             var wheight = $(window).height();
             wincontent = wheight - 78;
