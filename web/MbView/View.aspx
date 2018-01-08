@@ -123,11 +123,6 @@
             gsid = $.getUrlParam('id');
             GetData(gsid, user);
             setInterval("freshlable()", "1000");
-            var map = new AMap.Map('container', {
-                resizeEnable: true,
-                zoom: 5,
-                center: [109.335937, 34.189085]
-            });
         }
 
         //$(function () {

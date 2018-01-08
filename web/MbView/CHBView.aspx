@@ -55,7 +55,7 @@
                 <div class="Title ParentTitle"></div>
                 <div class="Title SonTitle">&nbsp;</div>
                 <div style="float:left;margin:5px;">
-                    <input type="text" id ="search_mc" placeholder="请输入查询单号" style="width:130px;" />
+                    <input type="text" id ="search_mc" placeholder="请输入查询单号" style="width:130px;float:left;" />
                     <div id="startTime" style="float:left;padding-left:10px;"></div>
                     <div style="float:left;padding-left:10px;">~</div>
                     <div id="endTime" style="float:left;padding-left:10px;"></div>
@@ -95,16 +95,23 @@
             Ext.create('Ext.form.field.Date', {
                 renderTo: 'startTime',
                 name: 'startTime',
-                format: 'Y-m-d'
+                id: 'time1',
+                format: 'Y-m-d',
+                editable: false,
+                value: new Date('2017-09-01')
             });
             Ext.create('Ext.form.field.Date', {
                 renderTo: 'endTime',
                 name: 'endTime',
-                format: 'Y-m-d'
+                id: 'time2',
+                format: 'Y-m-d',
+                editable: false,
+                value: new Date()
             });
+            InitFun();
         });
 
-        $(function () {
+        function InitFun() {
             var wheight = $(window).height();
             wincontent = wheight - 78;
             $(".wincontent").height(wincontent);
@@ -117,10 +124,25 @@
             gsid = $.getUrlParam('id');
             GetData(gsid, user, company);
             setInterval("freshlable()", "1000");
-            //var StartGetData = setInterval(function () {
-            //    GetData(gsid, user);
-            //}, 60000);
-        });
+        }
+
+        //$(function () {
+        //    var wheight = $(window).height();
+        //    wincontent = wheight - 78;
+        //    $(".wincontent").height(wincontent);
+        //    $(".wintitle").height(78);
+        //    $.getUrlParam = function (name) {
+        //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        //        var r = window.location.search.substr(1).match(reg);
+        //        if (r != null) return unescape(r[2]); return null;
+        //    }
+        //    gsid = $.getUrlParam('id');
+        //    GetData(gsid, user, company);
+        //    setInterval("freshlable()", "1000");
+        //    //var StartGetData = setInterval(function () {
+        //    //    GetData(gsid, user);
+        //    //}, 60000);
+        //});
 
         //var map = new AMap.Map('container', {
         //    resizeEnable: true,
@@ -156,8 +178,8 @@
 
         function GetData(id, username) {
             UserDenno = $("#search_mc").val();
-            startTime = $("#startTime").val();
-            endTime = $("#endTime").val();
+            startTime = Ext.getCmp("time1").getValue();
+            endTime = Ext.getCmp("time2").getValue();
 
             ACS('CZCLZ.Model.GetDetailsByViewByCHB', function (retVal) {
                 if (retVal) {
