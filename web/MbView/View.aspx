@@ -87,29 +87,30 @@
         var num = 0;
         var jsnum = 0;
         var UserDenno = "";
-        var year_qs = "";
-        var month_qs = "";
-        var day_qs = "";
-        var year_dd = "";
-        var month_dd = "";
-        var day_dd = "";
+        var startTime = "";
+        var endTime = "";
 
         Ext.onReady(function () {
             Ext.create('Ext.form.field.Date', {
                 renderTo: 'startTime',
                 name: 'startTime',
-                value: new Date(),
-                format: 'Y-m-d'
+                id: 'time1',
+                format: 'Y-m-d',
+                editable: false,
+                value: new Date('2017-09-01')
             });
             Ext.create('Ext.form.field.Date', {
                 renderTo: 'endTime',
                 name: 'endTime',
-                value: new Date(),
-                format: 'Y-m-d'
+                id: 'time2',
+                format: 'Y-m-d',
+                editable: false,
+                value: new Date()
             });
+            InitFun();
         });
 
-        $(function () {
+        function InitFun() {
             var wheight = $(window).height();
             wincontent = wheight - 78;
             $(".wincontent").height(wincontent);
@@ -122,10 +123,30 @@
             gsid = $.getUrlParam('id');
             GetData(gsid, user);
             setInterval("freshlable()", "1000");
-            //var StartGetData = setInterval(function () {
-            //    GetData(gsid, user);
-            //}, 60000);
-        });
+            var map = new AMap.Map('container', {
+                resizeEnable: true,
+                zoom: 5,
+                center: [109.335937, 34.189085]
+            });
+        }
+
+        //$(function () {
+        //    var wheight = $(window).height();
+        //    wincontent = wheight - 78;
+        //    $(".wincontent").height(wincontent);
+        //    $(".wintitle").height(78);
+        //    $.getUrlParam = function (name) {
+        //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        //        var r = window.location.search.substr(1).match(reg);
+        //        if (r != null) return unescape(r[2]); return null;
+        //    }
+        //    gsid = $.getUrlParam('id');
+        //    GetData(gsid, user);
+        //    setInterval("freshlable()", "1000");
+        //    //var StartGetData = setInterval(function () {
+        //    //    GetData(gsid, user);
+        //    //}, 60000);
+        //});
 
         //var map = new AMap.Map('container', {
         //    resizeEnable: true,
@@ -163,12 +184,8 @@
 
         function GetData(id, username) {
             UserDenno = $("#search_mc").val();
-            year_qs = $("#year_qs").val();
-            month_qs = $("#month_qs").val();
-            day_qs = $("#day_qs").val();
-            year_dd = $("#year_dd").val();
-            month_dd = $("#month_dd").val();
-            day_dd = $("#day_dd").val();
+            startTime = Ext.getCmp("time1").getValue();
+            endTime = Ext.getCmp("time2").getValue();
 
             ACS('CZCLZ.Model.GetDetailsByView', function (retVal) {
                 if (retVal) {
@@ -216,7 +233,7 @@
                         }
                     }
                 }
-            }, CS.onError, id, username, UserDenno, year_qs, month_qs, day_qs, year_dd, month_dd, day_dd);
+            }, CS.onError, id, username, UserDenno, startTime, endTime);
         }
     </script>
     <script type="text/javascript">
