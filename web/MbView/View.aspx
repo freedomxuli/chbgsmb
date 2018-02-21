@@ -71,6 +71,13 @@
             </td>
             <td class="wincontent" width="90%">
                 <div id="container"></div>
+                <div style="background-color: #0D9BF2;position:absolute;right:30px;top:200px;width:100px;height:150px;">
+                    　<input type='radio' onclick='ChangeKind(0);' checked name='mapStyle' value='normal' style="margin-bottom:10px;margin-top:10px;">　<span style="color:#ffffff;">全部<br /></span>
+                    　<input type='radio' onclick='ChangeKind(4);' name='mapStyle' value='dark' style="margin-bottom:10px;">　<span style="color:#ffffff;">预警<br /></span>
+                    　<input type='radio' onclick='ChangeKind(1);' name='mapStyle' value='light' style="margin-bottom:10px;">　<span style="color:#ffffff;">在途<br /></span>
+                    　<input type='radio' onclick='ChangeKind(2);' name='mapStyle' value='fresh' style="margin-bottom:10px;">　<span style="color:#ffffff;">到达<br /></span>
+                    　<input type='radio' onclick='ChangeKind(3);' name='mapStyle' value='grey' style="margin-bottom:10px;">　<span style="color:#ffffff;">返程<br /></span>
+                </div>
                 <div class="button-group">
                     <input type="button" class="button" id="mapshow" value="刷新地图" />
                 </div>
