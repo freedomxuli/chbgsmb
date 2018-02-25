@@ -27,6 +27,11 @@ public class MenuControl
                    <Tab p='' Name='制作模板'>approot/r/page/ZZMB/mbList2.html</Tab>
                 </Item>
             </Menu>
+            <Menu Name='专线模板'>            
+                <Item Name='专线模板'>
+                   <Tab p='' Name='专线模板'>approot/r/page/ZZMB/mbListByZX.html</Tab>
+                </Item>
+            </Menu>
             <Menu Name='查货宝制作模板'>            
                 <Item Name='查货宝制作模板'>
                    <Tab p='' Name='查货宝制作模板'>approot/r/page/ZZMB/CHBmbList.html</Tab>

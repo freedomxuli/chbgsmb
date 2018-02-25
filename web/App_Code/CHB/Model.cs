@@ -204,6 +204,37 @@ public class Model
         }
     }
 
+    [CSMethod("GetModelListByZX")]
+    public object GetModelListByZX(int CurrentPage, int PageSize, string UserName)
+    {
+        using (DBConnection db = new DBConnection())
+        {
+            try
+            {
+                int cp = CurrentPage;
+                int ac = 0;
+                string where = "";
+
+                if (!string.IsNullOrEmpty(UserName))
+                    where += " and UserName like @UserName";
+
+                string sql = "select * from CompanyModelByZX where 1=1 " + where + " order by Addtime";
+                SqlCommand cmd = db.CreateCommand(sql);
+                if (!string.IsNullOrEmpty(UserName))
+                    cmd.Parameters.AddWithValue("@UserName", "%" + UserName + "%");
+
+                DataTable dt = db.GetPagedDataTable(cmd, PageSize, ref cp, out ac);
+
+                return new { dt = dt, cp = cp, ac = ac };
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+
     [CSMethod("AddModel")]
     public string AddModel(string Name, string ShowName, string RuleKind)
     {
@@ -311,6 +342,42 @@ public class Model
         }
     }
 
+    [CSMethod("AddModelByZX")]
+    public string AddModelByZX(string UserName, string ShowName)
+    {
+        using (DBConnection db = new DBConnection())
+        {
+            try
+            {
+                db.BeginTransaction();
+                string sql = "select * from [dbo].[User] where UserName = @UserName and UserLeiXing = 'APP'";
+                SqlCommand cmd = db.CreateCommand(sql);
+                cmd.Parameters.Add("@UserName", UserName);
+                DataTable dt_list = db.ExecuteDataTable(cmd);
+                if (dt_list.Rows.Count == 0)
+                    throw new Exception("不存在该账户！请确认！");
+
+                string guid = Guid.NewGuid().ToString();
+                DataTable dt = db.GetEmptyDataTable("CompanyModelByZX");
+                DataRow dr = dt.NewRow();
+                dr["ID"] = guid;
+                dr["UserName"] = UserName;
+                dr["UserID"] = dt_list.Rows[0]["UserID"];
+                dr["ShowName"] = ShowName;
+                dr["Addtime"] = DateTime.Now;
+                dt.Rows.Add(dr);
+                db.InsertTable(dt);
+                db.CommitTransaction();
+                return guid;
+            }
+            catch (Exception ex)
+            {
+                db.RoolbackTransaction();
+                throw ex;
+            }
+        }
+    }
+
     [CSMethod("DeleteModel")]
     public bool DeleteModel(string ID)
     {
@@ -357,6 +424,31 @@ public class Model
 
                 sql = "delete from CompanyModelChildTwo where MID=@ID";
                 cmd = db.CreateCommand(sql);
+                cmd.Parameters.Add("@ID", ID);
+                db.ExecuteNonQuery(cmd);
+
+                db.CommitTransaction();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                db.RoolbackTransaction();
+                throw ex;
+            }
+        }
+    }
+
+    [CSMethod("DeleteModelByZX")]
+    public bool DeleteModelByZX(string ID)
+    {
+        using (var db = new DBConnection())
+        {
+            try
+            {
+                db.BeginTransaction();
+
+                string sql = "delete from CompanyModelByZX where ID=@ID";
+                SqlCommand cmd = db.CreateCommand(sql);
                 cmd.Parameters.Add("@ID", ID);
                 db.ExecuteNonQuery(cmd);
 
@@ -630,6 +722,49 @@ public class Model
         }
     }
 
+    [CSMethod("GetZXXQ")]
+    public DataTable GetZXXQ(string ID)
+    {
+        using (var dbc = new DBConnection())
+        {
+            string sql = "select * from CompanyModelByZX where ID = @ID";
+            SqlCommand cmd = dbc.CreateCommand(sql);
+            cmd.Parameters.Add("@ID",ID);
+            DataTable dt = dbc.ExecuteDataTable(cmd);
+            return dt;
+        }
+    }
+
+    [CSMethod("UpdateZX")]
+    public bool UpdateZX(string ID, string longitude, string latitude, string LevelNum)
+    {
+        using (var db = new DBConnection())
+        {
+            try
+            {
+                db.BeginTransaction();
+
+                DataTable dt = db.GetEmptyDataTable("CompanyModelByZX");
+                DataTableReader dtt = new DataTableReader(dt);
+                DataRow dr = dt.NewRow();
+                dr["ID"] = ID;
+                dr["longitude"] = longitude;
+                dr["latitude"] = latitude;
+                dr["LevelNum"] = LevelNum;
+                dt.Rows.Add(dr);
+                db.UpdateTable(dr);
+
+                db.CommitTransaction();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                db.RoolbackTransaction();
+                throw ex;
+            }
+        }
+    }
+
     [CSMethod("GetModelDetail")]
     public DataTable GetModelDetail(string ID)
     {
@@ -690,6 +825,26 @@ public class Model
         }
     }
 
+    [CSMethod("GetModelDetailByZX")]
+    public DataTable GetModelDetailByZX(string ID)
+    {
+        using (var db = new DBConnection())
+        {
+            try
+            {
+                string sql = "select * from CompanyModelByZX where ID = @ID";
+                SqlCommand cmd = db.CreateCommand(sql);
+                cmd.Parameters.Add("@ID", ID);
+                DataTable dt = db.ExecuteDataTable(cmd);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+
     [CSMethod("XGModel")]
     public bool XGModel(string ID, string Name, string ShowName, string RuleKind)
     {
@@ -726,6 +881,28 @@ public class Model
                 cmd.Parameters.Add("@Name", Name);
                 cmd.Parameters.Add("@ShowName", ShowName);
                 cmd.Parameters.Add("@RuleKind", RuleKind);
+                db.ExecuteNonQuery(cmd);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+
+    [CSMethod("XGModelByZX")]
+    public bool XGModelByZX(string ID, string UserName, string ShowName)
+    {
+        using (var db = new DBConnection())
+        {
+            try
+            {
+                string sql = "update CompanyModelByZX set UserName = @UserName,ShowName = @ShowName where ID = @ID";
+                SqlCommand cmd = db.CreateCommand(sql);
+                cmd.Parameters.Add("@ID", ID);
+                cmd.Parameters.Add("@UserName", UserName);
+                cmd.Parameters.Add("@ShowName", ShowName);
                 db.ExecuteNonQuery(cmd);
                 return true;
             }
@@ -1071,6 +1248,240 @@ public class Model
             qb = zt + dd + fc;
 
             return new { dt_model = dt_model, dt_child = dt_child, dt = dt, zt = zt, dd = dd, fc = fc, qb = qb, yj = yj };
+        }
+    }
+
+    [CSMethod("GetDetailsByViewZX")]
+    public object GetDetailsByViewZX(string ID, string UserName, string UserDenno, string startTime, string endTime)
+    {
+        using (var db = new DBConnection())
+        {
+            string sql = "select * from CompanyModelByZX where ID = @ID";
+            SqlCommand cmd = db.CreateCommand(sql);
+            cmd.Parameters.Add("@ID", ID);
+            DataTable dt_model = db.ExecuteDataTable(cmd);
+
+            string conn = " and a.UserID = '" + dt_model.Rows[0]["UserID"].ToString() + "'";
+
+            if (!string.IsNullOrEmpty(UserDenno))
+                conn += " and a.UserDenno like '%" + UserDenno + "%'";
+            conn += " and BangDingTime >= '" + startTime + "' and BangDingTime < '" + Convert.ToDateTime(endTime).AddDays(1) + "'";
+            sql = "select a.* from YunDan a where IsBangding = 1" + conn;
+            DataTable dt = db.ExecuteDataTable(sql);
+            dt.Columns.Add("jingweidu");
+            dt.Columns.Add("markinfo");
+            dt.Columns.Add("ZT");
+
+            sql = "select YunDanDenno from YunDanIsArrive";
+            DataTable dt_dan = db.ExecuteDataTable(sql);
+
+            sql = "SELECT * FROM YunDanDistance WHERE YunDanDenno IN (select a.YunDanDenno from YunDan a where IsBangding = 1" + conn + ")";
+            DataTable dt_yundandistance = db.ExecuteDataTable(sql);
+
+            sql = @"select a.* from YunDan a 
+                    inner join (
+	                    select DATEDIFF(mi,dateadd(SS,duration,getdate()),dateadd(HH,a.Expect_Hour,a.BangDingTime)) TimeCZ,a.YunDanDenno from YunDan a
+	                    inner join (select *,cast(Gps_duration as decimal) duration from YunDanDistance where Gps_duration is not null) b on a.YunDanDenno = b.YunDanDenno
+	                    where a.Expect_Hour is not null and a.IsBangding = 1 " + conn + @"
+                    ) b on a.YunDanDenno = b.YunDanDenno
+                    where a.IsBangding = 1 and TimeCZ < 0" + conn + @" and a.YunDanDenno not in (select YunDanDenno from YunDanIsArrive) order by BangDingTime desc";
+            DataTable dt_yj = db.ExecuteDataTable(sql);
+
+            int qb = 0;
+            int zt = 0;
+            int dd = 0;
+            int fc = 0;
+            int yj = dt_yj.Rows.Count;
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["Gps_lastlat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_lng"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lat"].ToString()) && !string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_lng"].ToString()))
+                {
+                    string DaoDaZhan = dt.Rows[i]["DaoDaZhan"].ToString().Replace(" ", "");
+                    string[] LastZhanArray = dt.Rows[i]["Gps_lastinfo"].ToString().Split(' ');
+                    string LastZhan = "";
+                    string SalePerson = "";
+                    string Purchaser = "";
+                    string PurchaserPerson = "";
+                    string PurchaserTel = "";
+                    string CarrierCompany = "";
+                    string CarrierPerson = "";
+                    string CarrierTel = "";
+                    string DaoDaAddress = "";
+                    string QiShiAddress = "";
+                    string QiShiZhan_QX = string.IsNullOrEmpty(dt.Rows[i]["QiShiZhan_QX"].ToString()) ? "" : dt.Rows[i]["QiShiZhan_QX"].ToString();
+                    string DaoDaZhan_QX = string.IsNullOrEmpty(dt.Rows[i]["DaoDaZhan_QX"].ToString()) ? "" : dt.Rows[i]["DaoDaZhan_QX"].ToString();
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["SalePerson"].ToString()))
+                        SalePerson = "<p style='margin:0;font-size:13px'>销售员：" + dt.Rows[i]["SalePerson"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["Purchaser"].ToString()))
+                        Purchaser = "<p style='margin:0;font-size:13px'>收货单位：" + dt.Rows[i]["Purchaser"] + "</p>";
+
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserPerson"].ToString()))
+                    //    PurchaserPerson = "<p style='margin:0;font-size:13px'>收货人：" + dt.Rows[i]["PurchaserPerson"] + "</p>";
+
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["PurchaserTel"].ToString()))
+                    //    PurchaserTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["PurchaserTel"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierCompany"].ToString()))
+                        CarrierCompany = "<p style='margin:0;font-size:13px'>承运公司：" + dt.Rows[i]["CarrierCompany"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierPerson"].ToString()))
+                        CarrierPerson = "<p style='margin:0;font-size:13px'>负责人：" + dt.Rows[i]["CarrierPerson"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["CarrierTel"].ToString()))
+                        CarrierTel = "<p style='margin:0;font-size:13px'>联系方式：" + dt.Rows[i]["CarrierTel"] + "</p>";
+
+                    //if (!string.IsNullOrEmpty(dt.Rows[i]["DaoDaAddress"].ToString()))
+                    //    DaoDaAddress = "<p style='margin:0;font-size:13px'>目的地详细地址：" + dt.Rows[i]["DaoDaAddress"] + "</p>";
+
+                    if (!string.IsNullOrEmpty(dt.Rows[i]["QiShiAddress"].ToString()))
+                        QiShiAddress = "<p style='margin:0;font-size:13px'>出发地详细地址：" + dt.Rows[i]["QiShiAddress"] + "</p>";
+
+                    if (LastZhanArray.Length >= 2)
+                    {
+                        LastZhan = LastZhanArray[0] + LastZhanArray[1];
+                    }
+                    if (DaoDaZhan == LastZhan)
+                    {
+                        dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
+                        string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
+                        dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
+                                                 "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                 + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
+                                                + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
+                                                + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                + SalePerson
+                                                + Purchaser
+                                                + PurchaserPerson
+                                                + PurchaserTel
+                                                + CarrierCompany
+                                                + CarrierPerson
+                                                + CarrierTel
+                                                + DaoDaAddress
+                                                + QiShiAddress
+                                                + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
+                                                + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
+                                                + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
+                                                + "</div>"
+                                                + "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
+
+                        dt.Rows[i]["ZT"] = "1";//到达
+                        dd++;
+                    }
+                    else
+                    {
+                        DataRow[] drs = dt_dan.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"].ToString() + "'");
+                        if (drs.Length > 0)
+                        {
+                            dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
+                            string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
+                            dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
+                                                     "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                     + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
+                                                    + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
+                                                    + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                    + SalePerson
+                                                    + Purchaser
+                                                    + PurchaserPerson
+                                                    + PurchaserTel
+                                                    + CarrierCompany
+                                                    + CarrierPerson
+                                                    + CarrierTel
+                                                    + DaoDaAddress
+                                                    + QiShiAddress
+                                                    + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
+                                                    + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
+                                                    + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
+                                                    + "</div>"
+                                                    + "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                    + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
+
+                            dt.Rows[i]["ZT"] = "2";//回途
+                            fc++;
+                        }
+                        else
+                        {
+                            //Hashtable ht = Route.getMapRoute(dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString(), dt.Rows[i]["DaoDaZhan_lng"].ToString() + "," + dt.Rows[i]["DaoDaZhan_lat"].ToString());
+                            //double distance = GetDistance(Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lat"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlat"].ToString()), Convert.ToDouble(dt.Rows[i]["DaoDaZhan_lng"].ToString()), Convert.ToDouble(dt.Rows[i]["Gps_lastlng"].ToString()));
+
+                            double distance = 0;
+                            double duration = 0;
+                            string distance_str = "";
+                            string duration_str = "";
+                            DataRow[] drs_distance = dt_yundandistance.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"].ToString() + "'");
+                            if (drs_distance.Length > 0)
+                            {
+                                if (!string.IsNullOrEmpty(drs_distance[0]["Gps_distance"].ToString()))
+                                    distance = Convert.ToDouble(drs_distance[0]["Gps_distance"]);
+                                if (!string.IsNullOrEmpty(drs_distance[0]["Gps_duration"].ToString()))
+                                    duration = Convert.ToDouble(drs_distance[0]["Gps_duration"]);
+                            }
+
+                            if (distance == 0)
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：暂无</p>";
+                            else
+                                distance_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余里程：" + distance + "公里</p>";
+
+                            if (duration == 0)
+                                duration_str = "<p style='margin:0;font-size:13px；color:blue;font-weight:bold;'>剩余时间：暂无</p>";
+                            else
+                            {
+                                int hour = 0;
+                                int minute = 0;
+                                if (Convert.ToInt32(duration / 60) == 0)
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + duration.ToString("F0") + "分钟</p>";
+                                else
+                                {
+                                    hour = Convert.ToInt32(duration / 60);
+                                    minute = Convert.ToInt32(duration % 60);
+                                    duration_str = "<p style='margin:0;font-size:13px;color:blue;font-weight:bold;'>剩余时间：" + hour + "小时 " + minute + "分钟</p>";
+                                }
+                            }
+                            dt.Rows[i]["jingweidu"] = dt.Rows[i]["Gps_lastlng"].ToString() + "," + dt.Rows[i]["Gps_lastlat"].ToString();
+                            string url = "http://chb.yk56.net/Map?YunDanDenno=" + dt.Rows[i]["YunDanDenno"];
+                            dt.Rows[i]["markinfo"] = "<p style='margin:0;font-size:15px;font-weight:bold'>详细信息</p><img class='closeX' src'' />" +
+                                                     "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                    + "<p style='margin:0;font-size:13px'>行驶路线：" + dt.Rows[i]["QiShiZhan"] + " " + QiShiZhan_QX + ">>>" + dt.Rows[i]["DaoDaZhan"] + " " + DaoDaZhan_QX + "</p>"
+                                                    + "<p style='margin:0;font-size:13px'>建单公司：" + dt.Rows[i]["SuoShuGongSi"] + "</p>"
+                                                    + "<p style='margin:0;font-size:13px'>单号：" + dt.Rows[i]["UserDenno"] + "</p>"
+                                                    + SalePerson
+                                                    + Purchaser
+                                                    + PurchaserPerson
+                                                    + PurchaserTel
+                                                    + CarrierCompany
+                                                    + CarrierPerson
+                                                    + CarrierTel
+                                                    + DaoDaAddress
+                                                    + QiShiAddress
+                                                    + "<p style='margin:0;font-size:13px'>所在位置：" + dt.Rows[i]["Gps_lastinfo"] + "</p>"
+                                                    + distance_str
+                                                    + duration_str
+                                                    + "<p style='margin:0;font-size:14px;color:Red'>定位时间：" + dt.Rows[i]["Gps_lasttime"] + "</p>"
+                                                    + "<a style='margin:0;font-size:14px' href='" + url + "' target='_blank'>查看轨迹 </a>"
+                                                    + "</div>"
+                                                    + "<HR style='border:1 solid #2828FF' width='100%'>"
+                                                    + "<div style='margin:0 auto;background-color: #f44336;color: white; padding: 5px 10px; font-size: 16px; text-align: center; font-size:18px; font-weight:bold; cursor:pointer;' onclick='closeInfoWindow();'>关闭</div>";
+
+                            DataRow[] drs_yj = dt_yj.Select("YunDanDenno = '" + dt.Rows[i]["YunDanDenno"] + "'");
+                            if (drs_yj.Length > 0)
+                            {
+                                dt.Rows[i]["ZT"] = "4";//预警
+                            }
+                            else
+                            {
+                                dt.Rows[i]["ZT"] = "0";//在途
+                            }
+                            zt++;
+                        }
+                    }
+                }
+            }
+
+            qb = zt + dd + fc;
+
+            return new { dt_model = dt_model, dt = dt, zt = zt, dd = dd, fc = fc, qb = qb, yj = yj };
         }
     }
 
