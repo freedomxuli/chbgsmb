@@ -1745,8 +1745,8 @@ public class Model
             DataTable dt_child = db.ExecuteDataTable(cmd);
 
             string conn = "";
-            if (!string.IsNullOrEmpty(CompanyModelChildId))
-                conn += " and a.UserID in (select UserID from [dbo].[User] where UserName in (select UserName from CompanyModelChild where MID = '" + CompanyModelChildId + "'))";
+            //if (!string.IsNullOrEmpty(CompanyModelChildId))
+            //    conn += " and a.UserID in (select UserID from [dbo].[User] where UserName in (select UserName from CompanyModelChild where MID = '" + CompanyModelChildId + "'))";
             if (!string.IsNullOrEmpty(UserDenno))
                 conn += " and UserDenno like '%" + UserDenno + "%'";
             if (!string.IsNullOrEmpty(SuoShuGongSi))
